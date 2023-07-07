@@ -47,10 +47,12 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
-            margin-left: 350px;
+            margin-left: 260px;
             margin-top: 50px;
+			align-items: center;
+			justify-content: center;
         }
 
         table {
@@ -543,30 +545,30 @@
 										<th>File</th>
 									</tr>
 									{% for username, file in files.items %}
+										{% if username == user.username %}
+										{% for f in file %}
 										<tr>
-											{% if username == user.username %}
-												{% for f in file %}
-												<td>{{ f.title }}</td>
-												<td>{{ f.description }}</td>
-												<td>{{ f.visibility }}</td>
-												<td>{{ f.cost }}</td>
-												<td>{{ f.year_published }}</td>
-												<td>
-													{% if f.file.url %}
-														<a href="{{ f.file.url }}">Download</a>
-													{% endif %}
-												</td>
-												{% empty %}
-												<tr class="no-files-row">
-													<td colspan="6">No files uploaded yet.</td>
-												</tr>
-												{% endfor%}
-											{% endif %}
+											<td>{{ f.title }}</td>
+											<td>{{ f.description }}</td>
+											<td>{{ f.visibility }}</td>
+											<td>{{ f.cost }}</td>
+											<td>{{ f.year_published }}</td>
+											<td>
+												{% if f.file.url %}
+													<a href="{{ f.file.url }}">Download</a>
+												{% endif %}
+											</td>
 										</tr>
-									{% empty %}
+										{% empty %}
 										<tr class="no-files-row">
 											<td colspan="6">No files uploaded yet.</td>
 										</tr>
+										{% endfor%}
+										{% endif %}
+									{% empty %}
+									<tr class="no-files-row">
+										<td colspan="6">No files uploaded yet.</td>
+									</tr>
 									{% endfor %}
 								</table>
 							</td>
