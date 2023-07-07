@@ -17,6 +17,7 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+import string
 
 def login(request):
     if request.method == "POST":
@@ -127,8 +128,6 @@ def generate_otp():
 def logout(request):
     auth_logout(request)
     return redirect("")
-
-import string
 
 def generate_activation_key():
     chars = string.ascii_letters + string.digits
