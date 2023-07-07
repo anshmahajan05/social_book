@@ -522,6 +522,7 @@
                         <th>Email</th>
                         <th>Username</th>
                         <th>Name</th>
+						<th>Files</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -531,7 +532,49 @@
                             <td>{{ user.email }}</td>
                             <td>{{ user.username }}</td>
                             <td>{{ user.fullname }}</td>
+							<td>
+								<table class="file-table data-table table nowrap">
+									<tr>
+										<th>Title</th>
+										<th>Description</th>
+										<th>Visibility</th>
+										<th>Cost</th>
+										<th>Year of Publication</th>
+										<th>File</th>
+									</tr>
+									{% for username, file in files.items %}
+										<tr>
+											{% if username == user.username %}
+												{% for f in file %}
+												<td>{{ f.title }}</td>
+												<td>{{ f.description }}</td>
+												<td>{{ f.visibility }}</td>
+												<td>{{ f.cost }}</td>
+												<td>{{ f.year_published }}</td>
+												<td>
+													{% if f.file.url %}
+														<a href="{{ f.file.url }}">Download</a>
+													{% endif %}
+												</td>
+												{% empty %}
+												<tr class="no-files-row">
+													<td colspan="6">No files uploaded yet.</td>
+												</tr>
+												{% endfor%}
+											{% endif %}
+										</tr>
+									{% empty %}
+										<tr class="no-files-row">
+											<td colspan="6">No files uploaded yet.</td>
+										</tr>
+									{% endfor %}
+								</table>
+							</td>
                         </tr>
+						{% empty %}
+						<tr class="no-files-row">
+							<td colspan="6">No files uploaded yet.</td>
+						</tr>
                     {% endfor %}
                 </tbody>
             </table>
