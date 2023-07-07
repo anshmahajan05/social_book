@@ -219,5 +219,3 @@ def uploaded_file_specific_user(request):
         print(file)
         # if file is not None:
         return render(request, "uploaded_files.html", {"files": file})
-
-
