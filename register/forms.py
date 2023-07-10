@@ -1,7 +1,9 @@
 from django import forms
+import requests
 from .models import CustomUser
 from datetime import date
 from django.contrib.auth.hashers import make_password
+import json
 
 class CustomUserCreationForm(forms.ModelForm):
     class Meta:
@@ -16,11 +18,32 @@ class CustomUserCreationForm(forms.ModelForm):
         age = calculate_age(year_of_birth)
         instance.age = age
         instance.password = passw
-
         if commit:
             instance.save()
 
         return instance
+
+    # def send_post_request(self):
+    #     url = 'http://localhost:8000/api/token/'
+    #     data = {
+    #         'username': self.cleaned_data['username'],
+    #         'password': self.cleaned_data['password']
+    #     }
+    #     print(self.cleaned_data['username'], self.cleaned_data['password'])
+
+    #     response = requests.post(url, json=data)
+    #     # Process the response
+    #     if response.status_code == 200:
+    #         # Request was successful
+    #         token = response.json()['token']
+    #         print(token)
+    #         return token
+    #     else:
+    #         # Request failed
+    #         error_message = response.text
+    #         # Handle the error
+
+    #     return response
 
 def calculate_age(year_of_birth):
     current_year = date.today().year

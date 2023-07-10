@@ -6,7 +6,6 @@ def my_books_wrapper(view_func):
         file = UploadedFile.objects.filter(username=request.user.username).all()
         print(file)
         if file.exists():
-
             return view_func(request, *args, **kwargs)
         else:
             return redirect('upload_file')

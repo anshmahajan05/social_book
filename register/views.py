@@ -65,34 +65,41 @@ def register(request):
         print(username)
         password = request.POST.get("password")
         print(password)
-        print(username)
         request.session['username'] = username
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            activation_key = generate_activation_key()
-            print(activation_key)
-            request.session['key'] = activation_key
-            print(request.session.get('key'))
-            subject = 'Social Book Registration'
-            message = f'Hello {fullname}, You have been registered with us successfully. Please verify your email by clicking on this link: http://localhost:8000/activate/{activation_key}/'
-            from_email = settings.EMAIL_HOST_USER
-            to_email = email
-            print(to_email)
-            send_mail(subject, message, from_email, [to_email])
-            print(subject, message, from_email, [to_email])
-            return render(request, 'login.html')
+            send_activation_mail(request, user)
+            return render(request, 'login.html', {'error_message': "Please activate your email first"})
     else:
         form = CustomUserCreationForm()
     return render(request, "register.html", {"form": form})
 
-def activate(request, activation):
+def send_activation_mail(request, user):
+    activation_key = generate_activation_key()
+    print(activation_key)
+    request.session['key'] = activation_key
+    global global_key, name
+    name = user.username
+    global_key = activation_key
+    print(global_key)
     print(request.session.get('key'))
-    key = request.session.get('key')
+    subject = 'Social Book Registration'
+    message = f'Hello {user.fullname}, You have been registered with us succesully. Please verify your email by clicking on this link: http://localhost:8000/activate/{activation_key}/'
+    from_email = settings.EMAIL_HOST_USER
+    to_email = user.email
+    print(to_email)
+    send_mail(subject, message, from_email, [to_email])
+    print(subject, message, from_email, [to_email])
+
+def activate(request, activation):
+    global global_key, name
+    # key = request.session.get('key')
+    key = global_key
     print("key got from session: ", key)
     print("Activation Key got from user:", activation)
-    username = request.session.get('username')
+    username = name
     print(username)
     if str(activation) == str(key):
         user = CustomUser.objects.get(username=username)
@@ -124,10 +131,9 @@ def generate_otp():
         otp += digits[floor(random.random() * 10)]
     return otp
 
-@login_required(login_url="login")
 def logout(request):
     auth_logout(request)
-    return redirect("")
+    return redirect("login")
 
 def generate_activation_key():
     chars = string.ascii_letters + string.digits
